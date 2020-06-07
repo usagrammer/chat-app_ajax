@@ -1,0 +1,25 @@
+= form_with model: room, local: true do |f|
+  - if room.errors.any?
+    .SettingGroupForm__errors
+      %h2= "#{room.errors.full_messages.count}件のエラーが発生しました。"
+      %ul
+        - room.errors.full_messages.each do |message|
+          %li= message
+  .SettingGroupForm__field
+    .SettingGroupForm__leftField
+      = f.label :name, "グループ名", class: 'SettingGroupForm__label'
+    .SettingGroupForm__rightField
+      = f.text_field :name, class: 'SettingGroupForm__input', placeholder: 'グループ名を入力してください'
+  .SettingGroupForm__field
+    .SettingGroupForm__leftField
+      %label.SettingGroupForm__label チャットメンバーを追加
+    .SettingGroupForm__rightField
+      %select{name: "room[user_ids][]"}
+        - User.all.where.not(id: current_user.id).each do |user|
+          %option{value: user.id}
+            = user.name
+      <input name="room[user_ids][]" type="hidden" value=#{current_user.id}>
+  .SettingGroupForm__field
+    .SettingGroupForm__leftField
+    .SettingGroupForm__rightField
+      = f.submit class: 'SettingGroupForm__button'
